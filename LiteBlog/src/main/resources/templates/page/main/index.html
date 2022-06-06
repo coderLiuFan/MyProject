@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lite Blog 首页</title>
+    <link rel="stylesheet" href="../main/index.css">
+</head>
+<body>
+<!-- 顶部导航 -->
+<div class="headerpage"></div>
+<!--顶部导航 over-->
+<hr>
+
+<!--中部主体-->
+
+<div class="box">
+    <div id="index-app">
+        <el-container>
+            <el-header style="padding: 0">
+                <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect"
+                         background-color="#545c64"
+                         text-color="#fff"
+                         active-text-color="#ffd04b">
+                    <el-menu-item v-for="(category) in categoryList" index="" style="width: 60px"><el-link
+                            :href="'/templates/page/main/index.html?categoryId='+category.categoryId">{{category.categoryName}}</el-link>
+                    </el-menu-item>
+                </el-menu>
+            </el-header>
+            <el-container>
+                <el-main></el-main>
+                <el-aside width="900px" style="overflow: hidden">
+                    <div class="blog-list"></div>
+                </el-aside>
+                <el-aside width="300px">
+                    <div class="未开发功能"></div>
+                </el-aside>
+                <el-main></el-main>
+            </el-container>
+        </el-container>
+    </div>
+</div>
+<!--中部主体 over-->
+
+<!--footer-->
+<div class="footerpage"></div>
+<!--footer over-->
+<script src="../../js/jquery-3.4.1.min.js"></script>
+<script>
+    $(function () {
+        /*公共部分
+        * 导航栏
+        * footer CopyRight
+        */
+        // $(".headerpage").load("load/header.html");/*浏览器容易引起跨域问题*/
+        $(".headerpage").load("http://localhost:8080/templates/page/main/header.html");
+        $(".footerpage").load("http://localhost:8080/templates/page/main/footer.html");
+        $(".blog-list").load("http://localhost:8080/templates/page/blog/active-blog.html");
+    });
+</script>
+
+<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+<!-- 引入组件库 -->
+<script src="../../plugins/vue/vue.js"></script>
+
+<script src="../../plugins/element-ui/index.js"></script>
+<link rel="stylesheet" href="../../plugins/element-ui/lib/theme-chalk/index.css">
+<!-- 引入axios -->
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<script src="../../api/category.js"></script>
+<script>
+    new Vue({
+        el: '#index-app',
+        data() {
+            return {
+                action: '',
+                counts: 0,
+                categoryList: [],
+                type: ''
+            }
+        },
+        mounted() {
+            // 页面加载完成之后发送异步请求来查询板块数据
+            var _this = this;
+            axios({
+                method: "get",
+                url: "http://localhost:8080/categories/list",
+            }).then(function (resp) {
+                _this.categoryList = resp.data.data;
+            })
+        }
+    })
+</script>
+</body>

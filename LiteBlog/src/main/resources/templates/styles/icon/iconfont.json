@@ -1,0 +1,16 @@
+{
+  "id": "3448903",
+  "name": "lb",
+  "font_family": "fontFamily",
+  "css_prefix_text": "el-icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "11372758",
+      "name": "点赞",
+      "font_class": "dianzan",
+      "unicode": "e8c3",
+      "unicode_decimal": 59587
+    }
+  ]
+}

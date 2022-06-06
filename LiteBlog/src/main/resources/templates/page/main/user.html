@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="user.css">
+
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<div class="headerpage"></div>
+<!--顶部导航 over-->
+<hr>
+
+<!--中部主体-->
+
+<div id="user-app">
+    <el-container>
+        <el-main></el-main>
+        <el-aside width="1200px" v-model="user">
+            姓名：{{user.nickname}}
+            <br>
+            邮箱：{{user.email}}
+        </el-aside>
+        <el-main></el-main>
+    </el-container>
+
+    <el-container>
+        <el-main></el-main>
+        <el-aside width="900px">
+            <template>
+                <el-tabs v-model="activeName" @tab-click="handleClick">
+                    <el-tab-pane label="作品" name="first">
+                        <!--active-blog-->
+                        <div class="blog-list"></div>
+                    </el-tab-pane>
+                    <el-tab-pane label="点赞" name="second"></el-tab-pane>
+                    <el-tab-pane label="收藏" name="third"></el-tab-pane>
+
+                </el-tabs>
+            </template>
+        </el-aside>
+        <el-aside width="300px"></el-aside>
+        <el-main></el-main>
+    </el-container>
+</div>
+
+
+<!--中部主体 over-->
+
+<!--footer-->
+<div class="footerpage"></div>
+<!--footer over-->
+<script src="../../js/jquery-3.4.1.min.js"></script>
+<script>
+    $(function () {
+        $(".headerpage").load("http://localhost:8080/templates/page/main/header.html");
+        $(".footerpage").load("http://localhost:8080/templates/page/main/footer.html");
+        $(".blog-list").load("http://localhost:8080/templates/page/blog/active-blog.html?userId=1");
+    });
+</script>
+<script src="../../plugins/vue/vue.js"></script>
+
+<script src="../../plugins/element-ui/index.js"></script>
+<link rel="stylesheet" href="../../plugins/element-ui/lib/theme-chalk/index.css">
+<!-- 引入axios -->
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<script src="../../api/category.js"></script>
+<script src="../../js/index.js"></script>
+<script>
+    var urlParam = requestUrlParam("userId")
+    new Vue({
+        var: id = this.urlParam,
+        el: '#user-app',
+        data() {
+            return {
+                userInfo: {},
+                user: {
+                    userId: 0,
+                    username: '',
+                    password: '',
+                    email: '',
+                    nickname: '',
+                }
+            }
+        },
+        mounted() {
+            console.log("mounted...")
+            var _this = this
+            // 页面加载完成后，发送axios请求获取用户信息
+            axios.get("http://localhost:8080/users/getMyPage").then((resp) => {
+                _this.user = resp.data.data
+            })
+        }
+    })
+</script>
+</body>
+</html>

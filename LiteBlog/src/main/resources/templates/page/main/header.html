@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="header.css">
+
+</head>
+<body>
+<div id="header-fragment">
+    <el-container>
+        <el-aside width="480px" style="line-height: 80px">
+            <a href="index.html">
+                <img src="../../images/login/lite_blog_logo.jpg" height="56"/>
+            </a>
+        </el-aside>
+
+        <el-main width="960px" style="background-color: #8c939d; line-height: normal; overflow: hidden">
+            <div class="grid-content" style="width: 800px">
+                <el-button icon="el-icon-search"
+                           circle
+                           v-on:click="search">
+                </el-button>
+                <el-input
+                        v-model="input"
+                        @input="change($event)"
+                        placeholder="全站搜索"
+                        style="width: 600px"
+                        clearable
+                        @keyup.enter.native="search"
+                >
+                </el-input>
+            </div>
+        </el-main>
+        <el-aside width="150px" style="line-height: 80px">
+            <el-link href="index.html"
+                     icon="el-icon-s-home">首页
+            </el-link>
+        </el-aside>
+        <el-aside width="150px" style="line-height: 80px">
+            <el-link href="author.html"
+                     icon="el-icon-magic-stick">创作者中心
+            </el-link>
+        </el-aside>
+        <el-aside width="150px" style="line-height: 80px">
+            <el-dropdown>
+                  <span class="el-dropdown-link">
+                      <i class="el-icon-s-custom"></i>
+                            个人中心
+                      <i class="el-icon-arrow-down el-icon--right"></i>
+                  </span>
+                <el-dropdown-menu slot="dropdown" style="width: 120px">
+                    <el-dropdown-item>
+                        <el-link v-on:click="myPage">我的主页</el-link>
+                    </el-dropdown-item>
+                    <el-dropdown-item><el-link v-on:click="logout">退出登录</el-link></el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+        </el-aside>
+    </el-container>
+</div>
+
+<!-- 引入组件库 -->
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/element-ui/index.js"></script>
+<link rel="stylesheet" href="../../plugins/element-ui/lib/theme-chalk/index.css">
+<!-- 引入axios -->
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<script src="../../js/index.js"></script>
+<script src="../../api/login.js"></script>
+
+<script>
+    new Vue({
+        el: "#header-fragment",
+        data() {
+            return {
+                userInfo: {}
+            }
+        },
+        computed: {},
+        created() {
+            this.init()
+        },
+        mounted() {
+        },
+        methods: {
+            async init() {
+                const params = {
+                    keyWord: this.input ? this.input : undefined
+                }
+            },
+            handleQuery() {
+                this.init();
+            },
+            change(e) {
+                this.$forceUpdate()
+            },
+            search(st) {
+                var keyWord = this.input.trim();
+                window.location.href = "http://localhost:8080/templates/page/main/index.html?keyWord=" + keyWord
+            },
+            myPage(st) {
+                // 获取当前登录用户的id
+                var userId = window.localStorage.getItem("userInfo")
+
+                console.log("userId是" + userId)
+
+                window.location.href = "http://localhost:8080/templates/page/main/user.html?userId=" + userId
+            },
+            logout() {
+                logoutApi().then((res) => {
+                    if (res.code === 1) {
+                        localStorage.removeItem('userInfo')
+                        window.location.href = '/templates/page/login/login.html'
+                    }
+                })
+            }
+        }
+    })
+</script>
+</body>
+</html>

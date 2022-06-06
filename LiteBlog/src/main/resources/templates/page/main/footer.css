@@ -1,0 +1,14 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.container__header,
+.container__footer {
+    flex-shrink: 0;
+}
+
+.container__main {
+    flex-grow: 1;
+}

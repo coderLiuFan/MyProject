@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../blog/active-blog.css">
+    <link rel="stylesheet" href="../../styles/icon/iconfont.css">
+</head>
+<body>
+<div id="blog-app">
+
+    <el-container id="active-blog" v-for="(blogDto) in blogList">
+        <el-header style="height: 50px">
+            <el-link :href="'blog-detail.html?blogId='+ blogDto.blogId"
+                     style="font-size: 18px ; font-weight: 1000; height: 30px">
+                {{blogDto.blogTitle}}
+            </el-link>
+        </el-header>
+        <el-container>
+            <el-aside width="240px" style="background-color: #ffffff ; line-height: 170px">
+                <a :href="'blog-detail.html?blogId='+ blogDto.blogId">
+                    <img src="../../images/blog/cover/cover.jpg" width="220"/>
+                </a>
+            </el-aside>
+            <el-container>
+                <el-main
+                        style="height: 120px;
+                        background-color: #ffffff;
+                        overflow: hidden;
+                        padding-top: 24px;
+                        text-indent: 30px;
+                        text-align: left;
+                        font-size: smaller;
+                        word-break: break-word;
+                        line-height: 30px;"
+                >
+                    {{blogDto.blogContent}}
+                    <hr>
+                </el-main>
+                <el-footer style="height: 50px; background-color: #ffffff">
+                    <span>
+                        <i class="el-icon-user"></i>
+                        <el-link herf="">{{blogDto.authorName}}</el-link>
+                    </span>
+                    <span>
+                        <i class="el-icon-time"></i>
+                        <el-link herf="">{{blogDto.blogCreateTime}}</el-link>
+                    </span>
+                    <span>
+                        <i class="el-icon-view"></i>
+                        <el-link herf="">浏览人数</el-link>
+                    </span>
+                    <span>
+                        <i class="el-icon-dianzan"></i>
+                        <el-link herf="">点赞人数</el-link>
+                    </span>
+                </el-footer>
+
+            </el-container>
+        </el-container>
+    </el-container>
+
+
+    <!--    <div class="active-blog" id="active-blog" v-for="(blog) in blogList">
+            <el-row style="height: 30px">
+                <el-col :span="24">
+                    <div class="blogTitle">
+                        <el-link style="font-size: x-large" herf="">{{blog.blogTitle}}</el-link>
+                    </div>
+                </el-col>
+            </el-row>
+            <el-row style="height: 90px">
+                <el-col :span="8">
+                    <div class="grid-image">
+                        <a href="index.html">
+                            <img src="../../images/login/cover.jpg" height="56" width="185"/>
+                        </a>
+                    </div>
+                </el-col>
+                <el-col :span="16">
+                    <div class="grid-content">
+                        <div>
+                            {{blog.blogContent}}
+                        </div>
+                        <div>
+                        <span>
+                            <i class="el-icon-user"></i>
+                            <el-link herf="">{{blog.blogAuthorId}}</el-link>
+                        </span>
+                            <span>
+                            <el-link herf="">{{blog.blogCreateTime}}</el-link>
+                        </span>
+                            <span>
+                            <i class="el-icon-view"></i>
+                            <el-link herf="">浏览人数</el-link>
+                        </span>
+                            <span>
+                            <el-link herf="">点赞人数</el-link>
+                        </span>
+                        </div>
+                    </div>
+                </el-col>
+                </el-col>
+            </el-row>
+        </div>-->
+</div>
+
+<!-- 引入组件库 -->
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/element-ui/index.js"></script>
+<link rel="stylesheet" href="../../plugins/element-ui/lib/theme-chalk/index.css">
+<!-- 引入axios -->
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<script src="../../js/index.js"></script>
+<script>
+
+
+    var urlParam1 = requestUrlParam("categoryId")
+    var urlParam2 = requestUrlParam("keyWord")
+    var urlParam3 = requestUrlParam("userId")
+    new Vue({
+        var: categoryId = this.urlParam1,
+        var: keyWord = this.urlParam2,
+        var: userId = this.urlParam3,
+        el: "#blog-app",
+        data() {
+            return {
+                action: '',
+                counts: 0,
+                blogList: [], // blogDto的集合
+                type: ''
+            }
+        },
+        mounted() {
+            // 页面加载完成之后发送异步请求来查询博客数据
+            var _this = this;
+            // 如果空参直接查询所有
+            if (categoryId == null && keyWord == null && userId == null) {
+                console.log("查询所有")
+                axios({
+                    method: "get",
+                    url: "http://localhost:8080/blogs/getAllDto",
+                }).then(function (resp) {
+                    _this.blogList = resp.data.data;
+                })
+                // url携带板块id参数，则按照板块id查找
+            } else if (categoryId != null) {
+                console.log("按板块id查找")
+                axios.get("http://localhost:8080/blogs/getByCategoryId/" + categoryId).then((resp) => {
+                    _this.blogList = resp.data.data;
+                })
+                // axios发送请求另一种格式
+                /*axios({
+                    method: "get",
+                    url: "http://localhost:8080/blogs/getByCategoryId/" + categoryId,
+                }).then(function (resp) {
+                    _this.blogList = resp.data.data;
+                })*/
+                // url携带关键字，则按照关键字查找
+            } else if (keyWord != null) {
+                console.log("按关键字查找")
+                axios({
+                    method: "get",
+                    url: "http://localhost:8080/blogs/getByKeyWord/" + keyWord,
+                }).then(function (resp) {
+                    _this.blogList = resp.data.data;
+                })
+            } else if (userId != null) {
+                console.log("按照作者查找")
+                axios({
+                    method: "get",
+                    url: "http://localhost:8080/blogs/getByAuthorId",
+                }).then(function (resp) {
+                    _this.blogList = resp.data.data;
+                })
+            }
+        }
+    })
+</script>
+</body>
+</html>
