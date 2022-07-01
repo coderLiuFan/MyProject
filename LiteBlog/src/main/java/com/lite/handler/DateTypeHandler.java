@@ -9,6 +9,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
+/**
+ * 自定义日期类型转换器
+ */
 public class DateTypeHandler extends BaseTypeHandler<Date> {
     @Override
     public void setNonNullParameter(PreparedStatement preparedStatement, int i, Date date, JdbcType jdbcType) throws SQLException {

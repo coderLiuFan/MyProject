@@ -1,8 +1,6 @@
 package com.lite.filter;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.AntPathMatcher;
-
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
@@ -18,8 +16,6 @@ import java.io.IOException;
 @Slf4j
 @WebFilter(filterName = "LoginCheckFilter",urlPatterns = "/*")
 public class LoginCheckFilter implements Filter {
-    public static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
-
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         log.info("filter init...");
@@ -31,50 +27,45 @@ public class LoginCheckFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        log.info("do filter...");
         // 获取uri
         String uri = request.getRequestURI();
-        log.info("拦截到请求:{}",uri);
+        log.info("请求:{}",uri);
 
         // 定义放行的请求路径
         String[] urls = new String[]{
-                "/api/login.js",
-                "/users/login",
+                "/users/login","/login/",
+                "/register/","/users/checkExist/","/users/download","/users/upload","/users",
+                "/users/logout",
+                "/api/",
                 "/plugins/",
-                "/styles/",
                 "/js/",
-                "/login/",
-                "/register/",
-                "/users/logout"
+                "/styles/",
         };
 
         // 循环判断
         for (String u : urls) {
             if (uri.contains(u)) {
+                log.info("放行静态资源");
                 chain.doFilter(servletRequest, servletResponse);
                 return;
             }
         }
-        // 1. 判断session中是否有user
-
+        // 1. 判断session中是否有userId
         HttpSession session = request.getSession();
         Object userId = session.getAttribute("userId");
-        log.info("查询到当前用户id为{}", userId);
 
         // 2. 判断user是否为null
         if (userId != null) {
             // 用户登录过了，允许放行
-            // 放行
             chain.doFilter(servletRequest, servletResponse);
         } else {
-            // 用户没有登陆
+            // 用户没有登录
             // 拦截下来，跳转到登录页面，存放提示信息
+            log.info("用户未登录，不允许放行");
             request.setAttribute("login_msg", "您尚未登录！");
             response.sendRedirect("/templates/page/login/login.html");
             // request.getRequestDispatcher("/templates/page/login/login.html").forward(servletRequest, servletResponse);
         }
-
-
     }
 
     @Override

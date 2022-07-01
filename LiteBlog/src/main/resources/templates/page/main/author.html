@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Lite Blog 创作者中心</title>
-    <link rel="stylesheet" href="author.css">
+    <link rel="stylesheet" href="../../styles/author.css">
 </head>
 
 <body>
@@ -13,21 +13,22 @@
 
 <!--中部主体-->
 <div id="author-app">
-    <el-container>
-        <el-aside width="100px"></el-aside>
+    <el-container >
         <el-container>
-            <el-header><div class="grid-content bg-purple">
-                <el-link href="/templates/page/main/blog-write.html">创建博客</el-link>
-            </div></el-header>
-            <el-main><div class="blog-list" align="center">
-                <template>
+            <el-header style="background-color: #ffffff">
+                <div class="grid-content bg-purple" style="padding-left: 48%">
+                    <el-button type="primary" v-on:click="writeHandle">写一篇博客</el-button>
+
+                </div>
+            </el-header>
+            <el-main style="height: 1000px; background-color: #ffffff">
+                <div class="blog-list" align="center" style="background-color: #ffffff; overflow: hidden">
                     <el-table
+                            :default-sort = "{prop: 'createTime', order: 'descending'}"
                             :data="blogList"
-                            border="false"
-                            style="width: 1500px ; line-height: normal"
-                    >
+                            style="width: min-content; line-height: normal; overflow: hidden">
                         <el-table-column
-                                v-if="1==0"
+                                v-if="false"
                                 prop="blogId"
                                 label="id"
                                 width="0">
@@ -39,11 +40,23 @@
                         >
                         </el-table-column>
                         <el-table-column
-                                prop="blogCreateTime"
+                                prop="createTime"
                                 label="创建时间"
-                                width="300"
+                                width="200"
                                 align="center"
+                                sortable
                         >
+                        </el-table-column>
+                        <el-table-column
+                                prop="updateTime"
+                                label="上次修改"
+                                width="200"
+                                align="center"
+                                sortable
+                        >
+                            <template slot-scope="scope">
+                                {{ scope.row.updateTime == null ? '——' : scope.row.updateTime != null ? scope.row.updateTime: '' }}
+                            </template>
                         </el-table-column>
                         <el-table-column
                                 prop="categoryName"
@@ -53,22 +66,44 @@
                         >
                         </el-table-column>
                         <el-table-column
+                                prop="blogStatus"
+                                label="公开状态"
+                                width="200"
+                                align="center"
+                                sortable
+                        >
+                            <template slot-scope="scope">
+                                {{ scope.row.blogAccess == 0 ? '私密' : scope.row.blogAccess == 1 ?'公开': '' }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="blogAccess"
+                                label="发布状态"
+                                width="200"
+                                align="center"
+                                sortable
+                        >
+                            <template slot-scope="scope">
+                                {{ scope.row.blogStatus == 0 ? '草稿' : scope.row.blogStatus == 1 ?'已发布': '' }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column
                                 label="操作"
                                 width="200"
                                 align="center"
                         >
                             <template slot-scope="scope">
-                                <el-button @click="editHandle(scope.row.blogId)" size="small"
+                                <el-button type="primary" plain @click="editHandle(scope.row.blogId)" size="small"
                                            icon="el-icon-edit">
                                 </el-button>
-                                <el-button @click="deleteHandle(scope.row.blogId)" size="small"
+                                <el-button  type="danger" plain @click="deleteHandle(scope.row.blogId)" size="small"
                                            icon="el-icon-delete" style="color: red">
                                 </el-button>
                             </template>
                         </el-table-column>
                     </el-table>
-                </template>
-            </div></el-main>
+                </div>
+            </el-main>
         </el-container>
     </el-container>
 
@@ -81,26 +116,15 @@
 <script src="../../js/jquery-3.4.1.min.js"></script>
 <script>
     $(function () {
-        /*公共部分
-        * 导航栏
-        * footer CopyRight
-        */
-        // $(".headerpage").load("load/header.html");/*浏览器容易引起跨域问题*/
         $(".headerpage").load("http://localhost:8080/templates/page/main/header.html");
         $(".footerpage").load("http://localhost:8080/templates/page/main/footer.html");
     });
 </script>
 
-<!-- 开发环境版本，包含了有帮助的命令行警告 -->
 <!-- 引入组件库 -->
 <script src="../../plugins/vue/vue.js"></script>
 <script src="../../plugins/element-ui/index.js"></script>
-<!--
 <link rel="stylesheet" href="../../plugins/element-ui/lib/theme-chalk/index.css">
--->
-<script src="../../plugins/element-ui/index.js"></script>
-
-<!-- 引入axios -->
 <script src="../../plugins/axios/axios.min.js"></script>
 <script src="../../js/request.js"></script>
 <script src="../../api/blog.js"></script>
@@ -109,12 +133,7 @@
         el: '#author-app',
         data() {
             return {
-                action: '',
-                counts: 0,
-                page: 1,
-                pageSize: 10,
                 blogList: [],
-                input: '',
                 blogId: 0
             }
         },
@@ -125,29 +144,15 @@
         mounted() {
         },
         methods: {
+            // 查找
             async init() {
                 // 页面加载完成之后发送异步请求来查询博客数据
                 var _this = this;
-                axios({
-                    method: "get",
-                    url: "http://localhost:8080/blogs/getByAuthorId",
-                }).then(function (resp) {
+                axios.get("/blogs/getByAuthorId").then((resp) => {
                     _this.blogList = resp.data.data;
-                    console.log(this.blogId)
                 })
-                /*await getBlogPage({'page': this.page, 'pageSize': this.pageSize}).then(res => {
-                    if (String(res.code) === '1') {
-                        // this.blogList = res.data.records
-                        this.counts = Number(res.data.total)
-                    } else {
-                        this.$message.error(res.msg || '操作失败')
-                    }
-                }).catch(err => {
-                    this.$message.error('请求出错了：' + err)
-                })*/
             },
             handleQuery() {
-                this.page = 1;
                 this.init();
             },
             // 删除
@@ -168,10 +173,20 @@
                     })
                 })
             },
+            // 编辑
             editHandle(blogId) {
                 // 跳转到编辑页面，同时携带blogId参数
-                window.location.href="blog-write.html?blogId="+ blogId
+                window.location.href = "blog-write.html?blogId=" + blogId
+            },
+            // 新增
+            writeHandle(){
+                // 跳转到写博客页面
+                window.location.href="/templates/page/main/blog-write.html"
+            },
+            formatter(row, column) {
+                return row.address;
             }
+
         }
     })
 </script>

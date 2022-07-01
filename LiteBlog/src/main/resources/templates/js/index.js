@@ -32,3 +32,58 @@ function requestUrlParam(argName) {
         }
     }
 }
+
+function updateUrl( key, value){
+    var newurl = updateQueryStringParameter(key, value)
+    //向当前url添加参数，没有历史记录
+    window.history.replaceState({
+        path: newurl
+    }, '', newurl);
+}
+
+function updateQueryStringParameter(key, value) {
+    var uri = window.location.href
+    if(!value) {
+        return uri;
+    }
+    var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+    var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+    if (uri.match(re)) {
+        return uri.replace(re, '$1' + key + "=" + value + '$2');
+    }
+    else {
+        return uri + separator + key + "=" + value;
+    }
+}
+
+
+
+function getMyDate(num) {
+    var oDate = new Date(num),
+        oYear = oDate.getFullYear(),
+        oMonth = oDate.getMonth()+1,
+        oDay = oDate.getDate(),
+        // oHour = oDate.getHours(),
+        // oMin = oDate.getMinutes(),
+        // oSen = oDate.getSeconds(),
+        oTime = oYear +'-'+ addZero(oMonth) +'-'+ addZero(oDay) /*+' '+ addZero(oHour) +':'+
+            addZero(oMin) +':'+addZero(oSen)*/;
+    return oTime;
+}
+
+//补零操作
+function addZero(num){
+    if(parseInt(num) < 10){
+        num = '0'+num;
+    }
+    return num;
+}
+
+function changeTime(time){
+    var commonTime = "";
+    if(time){
+        var unixTimestamp = new Date(time*1) ;
+        commonTime = unixTimestamp.toLocaleString();
+    }
+    return commonTime;
+}

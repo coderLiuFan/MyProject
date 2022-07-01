@@ -31,8 +31,13 @@ public class TestMapper {
         for (Blog blog : blogs) {
             System.out.println(blog);
         }
-//        commentMapper.selectList(null);
-//        categoryMapper.selectList(null);
+    }
 
+    @Test
+    public void testGetFavorites(){
+        List<Long> allFavoritesBlogIdByUserId = userMapper.findAllFavoritesBlogIdByUserId(1L);
+        for (Long aLong : allFavoritesBlogIdByUserId) {
+            System.out.println(aLong);
+        }
     }
 }

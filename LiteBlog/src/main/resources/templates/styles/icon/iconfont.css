@@ -1,22 +1,26 @@
 @font-face {
-  font-family: "fontFamily"; /* Project id 3448903 */
-  src: url('iconfont.eot?t=1654335869245'); /* IE9 */
-  src: url('iconfont.eot?t=1654335869245#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('iconfont.woff2?t=1654335869245') format('woff2'),
-       url('iconfont.woff?t=1654335869245') format('woff'),
-       url('iconfont.ttf?t=1654335869245') format('truetype'),
-       url('iconfont.svg?t=1654335869245#fontFamily') format('svg');
+  font-family: "iconfont"; /* Project id 3448905 */
+  src: url('iconfont.eot?t=1655556224652'); /* IE9 */
+  src: url('iconfont.eot?t=1655556224652#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('iconfont.woff2?t=1655556224652') format('woff2'),
+       url('iconfont.woff?t=1655556224652') format('woff'),
+       url('iconfont.ttf?t=1655556224652') format('truetype'),
+       url('iconfont.svg?t=1655556224652#iconfont') format('svg');
 }
 
-.fontFamily {
-  font-family: "fontFamily" !important;
+.iconfont {
+  font-family: "iconfont" !important;
   font-size: 16px;
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.el-icon-dianzan:before {
-  content: "\e8c3";
+.el-icon-lite-dianzan_kuai:before {
+  content: "\ec8c";
+}
+
+.el-icon-lite-dianzan:before {
+  content: "\e600";
 }
 

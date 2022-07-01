@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>博客详情页</title>
-    <link rel="stylesheet" href="blog-detail.css">
+    <link rel="stylesheet" href="../../styles/blog-detail.css">
 </head>
 <body>
 <!-- 顶部导航 -->
@@ -12,7 +12,6 @@
 <hr>
 
 <!--中部主体-->
-
 <div class="box">
     <div id="detail-app">
         <el-container>
@@ -20,7 +19,9 @@
             <el-aside width="1200px" style="overflow: hidden">
                 <el-container v-model="blogDto">
                     <el-main style="background-color: #ffffff">
-                        <img src="../../images/blog/cover/cover.jpg" width="600"/>
+                        <img :src="'../../images/blog/cover/'+ blogDto.blogCoverImage"
+                             onerror="this.src='../../images/blog/cover/cover.jpg'"
+                             width="600" alt=""/>
                         <!--封面-->
                     </el-main>
                     <el-header style="background-color: #ffffff;
@@ -35,12 +36,15 @@
                         <!--作者、创作时间、浏览、点赞、收藏、
                         内容板块-->
                         <el-header style="background-color: #ffffff">
+                            <el-tag type="warning" pointer v-on:click="userLink"><i
+                                    class="el-icon-user"></i>作者：{{blogDto.authorName}}
+                            </el-tag>
                             <el-tag><i class="el-icon-paperclip"></i>板块：{{blogDto.categoryName}}</el-tag>
-                            <el-tag type="warning"><i class="el-icon-user"></i>作者：{{blogDto.authorName}}</el-tag>
-                            <el-tag type="info"><i class="el-icon-time"></i>创作时间：{{blogDto.blogCreateTime}}</el-tag>
+                            <el-tag type="info"><i class="el-icon-time"></i>创作时间：{{blogDto.createTime}}</el-tag>
                         </el-header>
 
                     </el-main>
+                    <!--正文部分-->
                     <el-main
                             style="text-align: left;
                             background-color: #ffffff;
@@ -48,14 +52,76 @@
                             padding-top: 0;
                             padding-left: 100px;
                             padding-right: 100px;
-                            font-size: smaller;
+                            font-size: medium;
                             word-break: normal;
                             line-height: 30px;
-                            min-height: 1000px;
+                            min-height: 600px;
                             white-space: pre-line"
                     >
-                        <!--正文部分-->
                         {{blogDto.blogContent}}
+                    </el-main>
+                    <!--点赞和收藏-->
+                    <el-main
+                            style="text-align: right;
+                            background-color: #ffffff;
+                            overflow: hidden;
+                            padding-top: 0;
+                            padding-left: 100px;
+                            padding-right: 100px;
+                            font-size: medium;
+                            word-break: normal;
+                            line-height: 30px;
+                            white-space: pre-line"
+                    >
+                        <el-row>
+                            <button type="button" class="el-button el-button--danger is-circle" v-on:click="submitLike">
+                                <!----><i class="iconfont">&#xe600;</i><!----></button>
+                            <el-button type="warning" icon="el-icon-star-off" v-on:click="submitFavorites"
+                                       circle></el-button>
+                            <el-button type="primary" icon="el-icon-share" circle></el-button>
+                        </el-row>
+                    </el-main>
+
+                    <!--评论部分--------------------------------------------------------------------------------->
+                    <el-divider content-position="left"><i style="font-weight: bolder;font-size: large">评论</i>
+                    </el-divider>
+                    <el-main style="height: 100px;
+                            padding: 0 30px;
+                            text-align: left;
+                            background-color: #ffffff;
+                            overflow: hidden;
+                            font-size: medium;
+                            word-break: normal;
+                            line-height: 30px;
+                            white-space: pre-line">
+                        <el-container>
+                            <el-aside width="100px" style="height: 80px; overflow:hidden;">
+                                <el-image
+                                        style="width: 50px; height: 50px; margin-top: 10px; border-radius: 50%; text-align: left"
+                                        :src="'../../images/user/'+ currentUserProfile"
+                                        fit="cover">
+                                </el-image>
+                            </el-aside>
+                            <el-aside width="1000px" style="height: min-content; line-height: 50px">
+                                <el-form :model="newComment" :rules="rules" ref="newComment"
+                                         style="display: flex; height: 80px">
+                                    <el-form-item prop="commentContent">
+                                        <el-input v-model="newComment.commentContent" placeholder="请输入评论内容"
+                                                  type="textarea"
+                                                  :autosize="{ minRows: 1, maxRows: 3}"
+                                                  style="width: 920px"
+                                        ></el-input>
+                                    </el-form-item>
+                                    <el-form-item>
+                                        <el-button v-on:click="onSubmit('newComment')">评论</el-button>
+                                    </el-form-item>
+                                </el-form>
+                            </el-aside>
+                        </el-container>
+                    </el-main>
+                    <el-divider style="margin: 0"></el-divider>
+                    <el-main>
+                        <div class="comment-list"></div>
                     </el-main>
                 </el-container>
             </el-aside>
@@ -73,22 +139,19 @@
     $(function () {
         $(".headerpage").load("http://localhost:8080/templates/page/main/header.html");
         $(".footerpage").load("http://localhost:8080/templates/page/main/footer.html");
-        $(".blog-list").load("http://localhost:8080/templates/page/blog/active-blog.html");
+        $(".comment-list").load("http://localhost:8080/templates/page/comment/active-comment.html");
     });
 </script>
 
-<!-- 开发环境版本，包含了有帮助的命令行警告 -->
 <!-- 引入组件库 -->
-
 <script src="../../plugins/vue/vue.js"></script>
-
 <script src="../../plugins/element-ui/index.js"></script>
 <link rel="stylesheet" href="../../plugins/element-ui/lib/theme-chalk/index.css">
-<!-- 引入axios -->
 <script src="../../plugins/axios/axios.min.js"></script>
 <script src="../../js/request.js"></script>
 <script src="../../js/index.js"></script>
-<script src="../../api/category.js"></script>
+<script src="../../api/comment.js"></script>
+
 <script>
     var urlParam = requestUrlParam("blogId")
     new Vue({
@@ -101,28 +164,97 @@
                     blogTitle: '',
                     blogSubUrl: '',
                     blogCoverImage: '',
-                    blogCreateTime: '',
-                    blogUpdateTime: '',
+                    createTime: '',
+                    updateTime: '',
                     blogStatus: 0,
                     blogAccess: 0,
                     blogAuthorId: 0,
                     blogCategoryId: undefined,
                     blogContent: '',
-
                     authorName: '',
                     categoryName: ''
                 },
+                currentUserProfile: '',
+                newComment: {
+                    commentId: 0,
+                    createTime: '',
+                    commentAuthorId: 0,
+                    commentBlogId: 0,
+                    commentContent: '',
+                },
+                rules: {
+                    commentContent: [
+                        {required: true, message: '您还没有输入任何内容'},
+                        {min: 5, message: '为防止灌水，至少评论5个字哦~', trigger: 'blur'}
+                    ]
+                }
             }
         },
-        mounted() {
-            // 页面加载完成之后，获取该篇博客的内容
+        created() {
+            // 获取用户信息，在发表评论处动态展示当前用户的头像
+            this.currentUserProfile = JSON.parse(localStorage.getItem('userInfo')).profile
+            // 页面加载，获取该篇博客的内容
             var _this = this
             axios.get("/blogs/" + id).then((res) => {
                 _this.blogDto = res.data.data
             })
+            axios.post("/users/reads/" + id)
+        },
+        mounted() {
+        },
+        methods: {
+            init() {
+                $(function () {
+                    $(".comment-list").load("http://localhost:8080/templates/page/comment/active-comment.html");
+                });
+            },
+            userLink() {
+                window.location.href = "user.html?userId=" + this.blogDto.blogAuthorId
+            },
+            onSubmit(newComment) {
+                var comment = this.newComment
+                comment.commentBlogId = this.blogDto.blogId
+                this.$refs[newComment].validate((valid) => {
+                    if (valid) {
+                        saveComment(comment).then(res => {
+                            if (res.code === 1) {
+                                this.$message.success('评论成功')
+                                this.init()
+                            } else {
+                                this.$message.error(res.msg || '操作失败')
+                            }
+                        }).catch(err => {
+                            this.$message.error('请求出错了：' + err)
+                        });
+                    } else {
+                        console.log("valid false")
+                        return false;
+                    }
+                })
+            },
+            submitLike() {
+                axios.post("/users/likes/" + id).then((res) => {
+                    if (res.data.code === 1) {
+                        this.$message.success(res.msg || '感谢点赞~')
+                    } else {
+                        this.$message.success(res.msg || '您已经点赞过这篇文章了~')
+                    }
+                }).catch(err => {
+                    this.$message.error('请求出错了：' + err)
+                })
+            },
+            submitFavorites() {
+                axios.post("/users/favorites/" + id).then((res) => {
+                    if (res.data.code === 1) {
+                        this.$message.success(res.msg || '收藏成功~')
+                    } else {
+                        this.$message.success(res.msg || '您已经收藏过这篇文章了~')
+                    }
+                }).catch(err => {
+                    this.$message.error('请求出错了：' + err)
+                })
+            }
         }
-
-
     })
 </script>
 </body>

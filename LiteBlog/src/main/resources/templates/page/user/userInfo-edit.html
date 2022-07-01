@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修改个人信息</title>
+    <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
+    <link rel="stylesheet" href="../../styles/common.css">
+    <link rel="stylesheet" href="../../styles/userInfo-edit.css">
+    <link rel="stylesheet" href="../../styles/icon/iconfont.css"/>
+    <style>
+        body {
+            width: 100%;
+            background: url(../../images/register/bg_img.png) no-repeat;
+            padding: 0;
+            background-size: 1920px 1920px;
+        }
+    </style>
+</head>
+<body>
+<div class="userInfo" id="userInfo-app">
+    <div class="userInfo-box">
+        <div class="userInfo-form">
+            <el-form :model="userInfoForm" :rules="rules" ref="userInfoForm" label-width="100px"
+                     style="width: 300px; display: inline-block"
+                     class="demo-userInfoForm" size="mini">
+                <el-link style="margin-top: 40px;margin-bottom: 40px; margin-left: 100px;font-size: large">修改个人信息</el-link>
+                <el-form-item label="id" v-show="false">
+                    <el-input v-model="userInfoForm.userId"></el-input>
+                </el-form-item>
+                <el-form-item label="用户名" prop="username">
+                    <el-input v-model="userInfoForm.username" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="userInfoForm.email"></el-input>
+                </el-form-item>
+
+                <el-form-item label="姓名" prop="nickname">
+                    <el-input v-model="userInfoForm.nickname"></el-input>
+                </el-form-item>
+                <el-form-item label="地区" prop="address">
+                    <el-input v-model="userInfoForm.address"></el-input>
+                </el-form-item>
+                <el-link style="margin-left: 60px;font-size: smaller; color: #7c828a" disabled>头像</el-link>
+                <el-upload :model="userInfoForm"
+                           class="avatar-uploader"
+                           action="/users/upload"
+                           :show-file-list="false"
+                           :on-success="handleAvatarSuccess"
+                           style="padding-top: 0; padding-left: 100px">
+
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar" onerror="this.src='../../images/user/profile.jpg'" alt="未上传头像">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"
+                       style="line-height: 12 ; font-size: smaller">点击上传头像</i>
+                </el-upload>
+                <el-form-item label="职业" prop="profession">
+                    <el-input v-model="userInfoForm.profession"></el-input>
+                </el-form-item>
+                <el-form-item label="个人简介" prop="resume">
+                    <el-input type="textarea" v-model="userInfoForm.resume"></el-input>
+                </el-form-item>
+
+                <el-form-item style="margin-top: 100px">
+                    <el-button type="primary" @click="submitForm('userInfoForm')">保存修改</el-button>
+                    <el-button @click="goBack">取消</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="../../plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../plugins/element-ui/index.js"></script>
+
+<!-- 引入axios -->
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<script src="../../js/validate.js"></script>
+<script src="../../api/user.js"></script>
+
+<script>
+    new Vue({
+        el: '#userInfo-app',
+        data() {
+            var validatePass = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入密码'));
+                } else {
+                    if (this.userInfoForm.checkPassword !== '') {
+                        this.$refs.userInfoForm.validateField('checkPassword');
+                    }
+                    callback();
+                }
+            };
+            var validatePass2 = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请再次输入密码'));
+                } else if (value !== this.userInfoForm.password) {
+                    callback(new Error('两次输入密码不一致!'));
+                } else {
+                    callback();
+                }
+            };
+            return {
+                userInfoForm: {
+                    userId: 0,
+                    username: '123',
+                    password: '',
+                    checkPassword: '',
+                    email: '',
+                    nickname: '',
+                    birthday: '',
+                    gender: undefined,
+                    address: '',
+                    resume: '',
+                    profession: '',
+                    profile: '',
+                },
+                imageUrl: '',
+                // loading: false,
+                rules: {
+                    email: [
+                        {required: true, message: '请输入邮箱', trigger: 'blur'},
+                        {max: 20, message: '最长不超过 20 个字符', trigger: 'blur'}
+                    ],
+                    nickname: [
+                        {required: true, message: '请输入用户名', trigger: 'blur'},
+                        {max: 20, message: '最长不超过 20 个字符', trigger: 'blur'}
+                    ],
+                    address: [
+                        {required: true, message: '请输入所在地区', trigger: 'blur'}
+                    ],
+                }
+            }
+        },
+        created() {
+            var _this = this
+            axios.get("/users/getCurrentUser").then((resp) => {
+                _this.userInfoForm = resp.data.data
+                this.imageUrl = '../../images/user/' + resp.data.data.profile
+            })
+        },
+        mounted() {
+        },
+        methods: {
+            handleAvatarSuccess(response, file, fileList) {
+                this.imageUrl = `/users/download?name=${response.data}`
+                this.userInfoForm.profile = `${response.data}`
+            },
+            beforeUpload(file) {
+                if (file) {
+                    const suffix = file.name.split('.')[1]
+                    const size = file.size / 1024 / 1024 < 2
+                    if (['png', 'jpeg', 'jpg'].indexOf(suffix) < 0) {
+                        this.$message.error('上传图片只支持 png、jpeg、jpg 格式！')
+                        this.$refs.upload.clearFiles()
+                        return false
+                    }
+                    if (!size) {
+                        this.$message.error('上传文件大小不能超过 2MB!')
+                        return false
+                    }
+                    return file
+                }
+            },
+            submitForm(userInfoForm) {
+                var user = this.userInfoForm
+                this.$refs[userInfoForm].validate((valid) => {
+                    if (valid) {
+                        updateUser(user).then(res => {
+                            if (res.code === 1) {
+                                this.$message.success('修改成功！')
+                                localStorage.removeItem('userInfo')
+                                localStorage.setItem('userInfo',JSON.stringify(user))
+                                window.location.href = "/templates/page/main/user.html?userId=" + user.userId
+                            } else {
+                                this.$message.error(res.msg || '操作失败')
+                            }
+                        }).catch(err => {
+                                this.$message.error('请求出错了：' + err)
+                            }
+                        );
+                    } else {
+                        console.log("valid false")
+                        return false;
+                    }
+                })
+            },
+            resetForm(userInfoForm) {
+                this.$refs[userInfoForm].resetFields();
+            },
+            goBack(){
+                window.history.go(-1);
+            }
+        }
+    })
+</script>
+</body>
+</html>

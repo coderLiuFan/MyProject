@@ -11,15 +11,15 @@
 }
 
 .bg-purple-dark {
-    background: #99a9bf;
+    background: #ffffff;
 }
 
 .bg-purple {
-    background: #d3dce6;
+    background: #ffffff;
 }
 
 .bg-purple-light {
-    background: #e5e9f2;
+    background: #ffffff;
 }
 
 .grid-content {
@@ -32,14 +32,14 @@
     background-color: #f9fafc;
 }
 .el-header, .el-footer {
-    background-color: #B3C0D1;
+    background-color: #ffffff;
     color: #333;
     text-align: center;
     line-height: 60px;
 }
 
 .el-aside {
-    background-color: #06284d;
+    background-color: #ffffff;
     color: #333;
     text-align: center;
     line-height: 35px;
@@ -47,7 +47,7 @@
 
 
 .el-main {
-    background-color: #61a1e1;
+    background-color: #ffffff;
     color: #333;
     text-align: center;
     line-height: 35px;

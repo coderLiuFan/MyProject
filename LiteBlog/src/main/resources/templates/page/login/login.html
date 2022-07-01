@@ -13,42 +13,52 @@
     <link rel="stylesheet" href="../../styles/login.css">
     <link rel="stylesheet" href="../../styles/icon/iconfont.css"/>
     <style>
-        .body {
-            min-width: 1366px;
+        body {
+            width: 1920px;
+            height: 100%;
+            background:url(../../images/login/bg_img.png);
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            overflow: hidden;
+            background-size: 100% 100%;
         }
     </style>
 </head>
 
 <body>
-<div class="login" id="login-app">
-    <div class="login-box">
-        <img src="../../images/login/login-l.jpg" alt="">
-        <div class="login-form">
-            <el-form ref="loginForm" :model="loginForm" :rules="loginRules">
-                <div class="login-form-title">
-                    <img src="../../images/login/lite_blog_logo.jpg" style="width:139px;height:42px;" alt=""/>
-                </div>
-                <el-form-item prop="username">
-                    <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号"
-                              maxlength="20"
-                              prefix-icon="iconfont icon-user"/>
-                </el-form-item>
-                <el-form-item prop="password">
-                    <el-input v-model="loginForm.password" type="password" placeholder="密码"
-                              prefix-icon="iconfont icon-lock" maxlength="20"
-                              @keyup.enter.native="handleLogin"/>
-                </el-form-item>
-                <el-form-item style="width:100%;">
-                    <el-button :loading="loading" class="login-btn" size="medium" type="primary" style="width:100%;"
-                               @click.native.prevent="handleLogin">
-                        <span v-if="!loading">登录</span>
-                        <span v-else>登录中...</span>
-                    </el-button>
-                </el-form-item>
-            </el-form>
+    <div class="login" id="login-app">
+        <div class="login-box">
+            <div class="login-form">
+                <el-form ref="loginForm" :model="loginForm" :rules="loginRules">
+                    <div class="login-form-title">
+                        <img src="../../images/login/lite_blog_logo.jpg" style="width:139px;height:42px;" alt=""/>
+                    </div>
+                    <el-form-item prop="username" label="用户名">
+                        <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号"
+                                  maxlength="20"
+                                  prefix-icon="iconfont icon-user"/>
+                    </el-form-item>
+                    <el-form-item prop="password" label="密码">
+                        <el-input v-model="loginForm.password" type="password" placeholder="密码"
+                                  prefix-icon="iconfont icon-lock" maxlength="20"
+                                  @keyup.enter.native="handleLogin"/>
+                    </el-form-item>
+                    <el-form-item style="width:100%;">
+                        <el-button :loading="loading" class="login-btn" size="medium" type="primary" style="width:100%;"
+                                   @click.native.prevent="handleLogin">
+                            <span v-if="!loading">登录</span>
+                            <span v-else>登录中...</span>
+                        </el-button>
+                    </el-form-item>
+                    <el-link href="../register/register.html"  type="primary" >还没有账号？去注册→</el-link>
+
+                </el-form>
+            </div>
         </div>
     </div>
-</div>
+
 
 <!-- 开发环境版本，包含了有帮助的命令行警告 -->
 <script src="../../plugins/vue/vue.js"></script>
@@ -75,7 +85,13 @@
                     username: '',
                     password: '',
                     email: '',
-                    nickname: ''
+                    nickname: '',
+                    birthday: undefined,
+                    gender: 0,
+                    address:'',
+                    resume: '',
+                    profession: '',
+                    profile: '',
                 }
             }
         },
@@ -110,8 +126,9 @@
                         this.loading = true
                         let res = await loginApi(this.loginForm)
                         if (String(res.code) === '1') {//1表示登录成功
-                            localStorage.setItem('userInfo', JSON.stringify(res.data.data))
-                            console.assert(res.data.data)
+                            localStorage.removeItem('userInfo')
+                            localStorage.setItem('userInfo', JSON.stringify(res.data))
+                            sessionStorage.setItem('userId',res.data.userId)
                             window.location.href = '/templates/page/main/index.html'
                         } else {
                             this.$message.error(res.msg)
