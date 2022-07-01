@@ -61,6 +61,11 @@ public class CommentController {
         return R.error("服务器开小差了，请稍后再试~");
     }
 
+    /**
+     * 删除评论
+     * @param commentId 评论id
+     * @return 操作结果信息
+     */
     @DeleteMapping("/{commentId}")
     public R<String> delete(@PathVariable Long commentId) {
         log.info("开始删除评论，id={}",commentId);

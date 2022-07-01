@@ -50,7 +50,7 @@ public class BlogController {
      * @return blogDto的封装类集合
      */
     @GetMapping("/getAllDto")
-    public R<List<BlogDto>> getDto() {
+    public R<List<BlogDto>> getAllDto() {
         log.info("获取所有带作者信息的博客");
         LambdaQueryWrapper<Blog> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Blog::getBlogAccess, 1).eq(Blog::getBlogStatus, 1);
@@ -147,7 +147,11 @@ public class BlogController {
         return R.success(blogDtoList);
     }
 
-
+    /**
+     * 查询用户点赞的博客
+     * @param userId
+     * @return
+     */
     @GetMapping("/getLikesByUserId/{userId}")
     public R<List<BlogDto>> getLikesByUserId(@PathVariable Long userId) {
         List<BlogDto> blogDtoList = getBlogDtoListByBlogIdList(userService.getAllLikesBlogIdByUserId(userId));
@@ -157,6 +161,11 @@ public class BlogController {
         return R.error("当前用户没有点赞过任何博客");
     }
 
+    /**
+     * 查询用户收藏的博客
+     * @param userId
+     * @return
+     */
     @GetMapping("/getFavoritesByUserId/{userId}")
     public R<List<BlogDto>> getFavoritesByUserId(@PathVariable Long userId) {
         List<BlogDto> blogDtoList = getBlogDtoListByBlogIdList(userService.getAllFavoritesBlogIdByUserId(userId));
@@ -166,6 +175,11 @@ public class BlogController {
         return R.error("当前用户没有收藏任何博客");
     }
 
+    /**
+     * 查询用户看过的博客
+     * @param userId
+     * @return
+     */
     @GetMapping("/getHistoryByUserId/{userId}")
     public R<List<BlogDto>> getHistoryByUserId(@PathVariable Long userId) {
         List<BlogDto> blogDtoList = getBlogDtoListByBlogIdList(userService.getAllHistoryBlogIdByUserId(userId));
