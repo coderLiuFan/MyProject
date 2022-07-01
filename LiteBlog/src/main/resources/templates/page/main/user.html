@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="user.css">
-
+    <link rel="stylesheet" href="../../styles/user.css">
 </head>
 <body>
 
@@ -17,32 +16,64 @@
 
 <div id="user-app">
     <el-container>
-        <el-main></el-main>
-        <el-aside width="1200px" v-model="user">
-            姓名：{{user.nickname}}
-            <br>
-            邮箱：{{user.email}}
+        <el-main style="background-color: #ffffff"></el-main>
+        <el-aside width="1080px" v-model="user" style="text-align: left; background-color: #ffffff">
+            <el-container>
+                <el-aside width="120px" style="background-color: #ffffff">
+                    <el-image class="profile"
+                              style="width: 100px; height: 100px; margin-top: 50px; border-radius: 50%;"
+                              onerror="this.src='../../images/user/profile.jpg'"
+                              :src="'../../images/user/'+ user.profile"
+                              fit="cover">
+                    </el-image>
+                </el-aside>
+                <el-main style="text-align: left; line-height: 10px;vertical-align: middle; background-color: #ffffff">
+                    <span style="font-size: medium;font-weight: bold; line-height: 100px">{{user.nickname}}</span>
+                    <el-divider direction="vertical"></el-divider>
+                    <span style="font-size: smaller;font-weight: bold; line-height: 100px">{{user.email}}</span>
+                    <el-divider direction="vertical"></el-divider>
+                    <span style="font-size: smaller;font-weight: bold; line-height: 100px">{{birthdayDate}}</span>
+                    <el-divider direction="vertical"></el-divider>
+                    <span style="font-size: smaller;font-weight: bold; line-height: 100px">{{user.address}}</span>
+                    <el-divider direction="vertical"></el-divider>
+                    <span v-if="user.profession!= null"
+                          style="font-size: smaller;font-weight: bold; line-height: 100px">{{user.profession}}</span>
+                    <br>
+                    <span v-if="user.resume != null" style="font-size: smaller;font-weight: lighter; line-height: 10px">{{user.resume}}</span>
+                    <span v-if="user.resume == null" style="font-size: smaller;font-weight: lighter; line-height: 10px">这个人很懒，什么都没写~</span>
+                </el-main>
+                <el-main v-if="user.userId==currentUserId"
+                         style="display: flex; align-items: center; font-size: smaller; width: 240px; background-color: #ffffff">
+                    <el-button type="info" icon="el-icon-edit" v-on:click="editUserInfo" circle plain
+                               style="margin-right: 20px"></el-button>
+                    编辑个人信息
+                </el-main>
+            </el-container>
         </el-aside>
-        <el-main></el-main>
+        <el-main style="background-color: #ffffff"></el-main>
     </el-container>
 
     <el-container>
-        <el-main></el-main>
-        <el-aside width="900px">
-            <template>
-                <el-tabs v-model="activeName" @tab-click="handleClick">
-                    <el-tab-pane label="作品" name="first">
-                        <!--active-blog-->
-                        <div class="blog-list"></div>
-                    </el-tab-pane>
-                    <el-tab-pane label="点赞" name="second"></el-tab-pane>
-                    <el-tab-pane label="收藏" name="third"></el-tab-pane>
-
-                </el-tabs>
-            </template>
+        <el-main style="background-color: #ffffff"></el-main>
+        <el-aside width="900px" style="background-color: #ffffff">
+            <el-tabs v-model="activeName" @tab-click="handleClick">
+                <el-tab-pane label="作品" name="first">
+                    <!--active-blog-->
+                    <div class="blog-list"></div>
+                </el-tab-pane>
+                <el-tab-pane label="点赞" name="second">
+                    <div class="blog-likes"></div>
+                </el-tab-pane>
+                <el-tab-pane label="收藏" name="third">
+                    <div class="blog-favorites"></div>
+                </el-tab-pane>
+                <el-tab-pane label="历史" name="fourth" v-if="user.userId==currentUserId">
+                    <div class="blog-reads"></div>
+                </el-tab-pane>
+            </el-tabs>
         </el-aside>
-        <el-aside width="300px"></el-aside>
-        <el-main></el-main>
+        <el-aside width="300px" style="background-color: #ffffff"></el-aside>
+        <el-main style="background-color: #ffffff"></el-main>
     </el-container>
 </div>
 
@@ -56,8 +87,11 @@
 <script>
     $(function () {
         $(".headerpage").load("http://localhost:8080/templates/page/main/header.html");
+        $(".blog-list").load("http://localhost:8080/templates/page/blog/active-blog.html");
+        $(".blog-likes").load("http://localhost:8080/templates/page/blog/active-blog-likes.html");
+        $(".blog-favorites").load("http://localhost:8080/templates/page/blog/active-blog-favorites.html");
+        $(".blog-reads").load("http://localhost:8080/templates/page/blog/active-blog-reads.html");
         $(".footerpage").load("http://localhost:8080/templates/page/main/footer.html");
-        $(".blog-list").load("http://localhost:8080/templates/page/blog/active-blog.html?userId=1");
     });
 </script>
 <script src="../../plugins/vue/vue.js"></script>
@@ -67,8 +101,8 @@
 <!-- 引入axios -->
 <script src="../../plugins/axios/axios.min.js"></script>
 <script src="../../js/request.js"></script>
-<script src="../../api/category.js"></script>
 <script src="../../js/index.js"></script>
+
 <script>
     var urlParam = requestUrlParam("userId")
     new Vue({
@@ -76,6 +110,7 @@
         el: '#user-app',
         data() {
             return {
+                action: '',
                 userInfo: {},
                 user: {
                     userId: 0,
@@ -83,16 +118,35 @@
                     password: '',
                     email: '',
                     nickname: '',
-                }
+                    birthday: 0,
+                    gender: 0,
+                    address: '',
+                    resume: '',
+                    profession: '',
+                    profile: '',
+                },
+                activeName: 'first',
+                birthdayDate: '',
+                currentUserId: 0,
             }
         },
-        mounted() {
-            console.log("mounted...")
+        created() {
             var _this = this
+            this.currentUserId = window.sessionStorage.getItem('userId')
             // 页面加载完成后，发送axios请求获取用户信息
-            axios.get("http://localhost:8080/users/getMyPage").then((resp) => {
+            axios.get("/users/" + id).then((resp) => {
                 _this.user = resp.data.data
+                console.log(_this.user)
+                console.log("生日毫秒数" + _this.user.birthday)
+                _this.birthdayDate = getMyDate(_this.user.birthday)
             })
+        },
+        mounted() {
+        },
+        methods: {
+            editUserInfo() {
+                window.location.href = "../user/userInfo-edit.html"
+            },
         }
     })
 </script>

@@ -3,6 +3,7 @@ import debounce from 'throttle-debounce/debounce';
 import { addClass, removeClass, on, off } from 'element-ui/src/utils/dom';
 import { generateId } from 'element-ui/src/utils/util';
 import Vue from 'vue';
+import '../../../../../styles/icon/iconfont.css'
 
 export default {
   name: 'ElTooltip',

@@ -1,16 +1,23 @@
 {
-  "id": "3448903",
-  "name": "lb",
-  "font_family": "fontFamily",
-  "css_prefix_text": "el-icon-",
+  "id": "3448905",
+  "name": "myIcon",
+  "font_family": "iconfont",
+  "css_prefix_text": "el-icon-lite-",
   "description": "",
   "glyphs": [
     {
-      "icon_id": "11372758",
+      "icon_id": "6380878",
+      "name": "点赞_块",
+      "font_class": "dianzan_kuai",
+      "unicode": "ec8c",
+      "unicode_decimal": 60556
+    },
+    {
+      "icon_id": "77697",
       "name": "点赞",
       "font_class": "dianzan",
-      "unicode": "e8c3",
-      "unicode_decimal": 59587
+      "unicode": "e600",
+      "unicode_decimal": 58880
     }
   ]
 }

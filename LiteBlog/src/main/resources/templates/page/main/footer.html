@@ -1,22 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>页面底部</title>
-    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="../../styles/footer.css">
 </head>
 <body>
 
+<div id="footer-app">
+    <el-container>
+        <el-main style="height: 200px; background-color: #2a2a2a; font-size: 15px; color: #8c939d; line-height: 50px; text-align: left; padding-left: 200px; overflow: hidden">
+            ©2022-2032 Cli.im xxxx网络科技有限公司浙ICP备12002xxx号-x<br>
+            浙公网安备 3302030200xxxx号<br>
+            增值电信业务经营许可证：浙B2-20140xxxx网络文化经营许可证：浙网文【2022】xxxxxxx号
+        </el-main>
+        <el-main style="height: 200px; background-color: #2a2a2a; font-size: larger; color: #8c939d; line-height: 50px; text-align: left; padding-top: 50px; overflow: hidden">
+            Lite Blog 1.0<br>
+            Be together, to be better~
+        </el-main>
+        <el-aside style="height: 200px; background-color: #2a2a2a; overflow: hidden">
+            <div>
+                <el-link href="https://blog.csdn.net/Coder_Liufan?spm=1000.2115.3001.5343" style="line-height: 10px">联系我们</el-link>
+            </div>
 
-<div class="container">
-    <header class="container__header">
-        ...
-    </header>
-    <main class="container__main">
-        ...
-    </main>
-    <footer class="container__footer">
-        ...
-    </footer>
+            <el-image src="../../images/footer/QRcode_Liufan.png" style="width: 100px;line-height: 20px; padding-top: 0"></el-image>
+        </el-aside>
+    </el-container>
 </div>
+
+
+<!-- 引入组件库 -->
+<script src="../../plugins/vue/vue.js"></script>
+
+<script src="../../plugins/element-ui/index.js"></script>
+<link rel="stylesheet" href="../../plugins/element-ui/lib/theme-chalk/index.css">
+<!-- 引入axios -->
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<script>
+    new Vue({
+        el: '#footer-app',
+        data() {
+            return {
+                action: '',
+                counts: 0,
+                categoryList: [],
+                type: ''
+            }
+        },
+        mounted() {
+            // 页面加载完成之后发送异步请求来查询板块数据
+            var _this = this;
+            axios({
+                method: "get",
+                url: "http://localhost:8080/categories/list",
+            }).then(function (resp) {
+                _this.categoryList = resp.data.data;
+            })
+        }
+    })
+</script>
+
 </body>
+
+
 </html>

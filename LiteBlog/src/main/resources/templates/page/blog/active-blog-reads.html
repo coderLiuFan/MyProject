@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Active blog list</title>
+    <link rel="stylesheet" href="../../styles/active-blog.css">
+    <link rel="stylesheet" href="../../styles/icon/iconfont.css">
+</head>
+<body>
+<div id="blog-reads-app" style="width: 880px">
+        <div>
+            <el-container id="active-blog" v-for="(blogDto) in blogList">
+                <el-card shadow="hover" style="border-radius: 5px; width: 900px">
+                    <el-header style="height: 50px; line-height: 50px; background-color: #ffffff">
+                        <el-link :href="'blog-detail.html?blogId='+ blogDto.blogId"
+                                 :underline="false"
+                                 style="font-size: 18px ; font-weight: 1000; height: 30px">
+                            {{blogDto.blogTitle}}
+                        </el-link>
+                    </el-header>
+                    <el-container>
+                        <el-aside width="240px" style="background-color: #ffffff ; line-height: 170px">
+                            <a :href="'blog-detail.html?blogId='+ blogDto.blogId">
+                                <img :src="'../../images/blog/cover/'+ blogDto.blogCoverImage"
+                                     onerror="this.src='../../images/blog/cover/cover.jpg'"
+                                     width="220" alt=""/>
+                            </a>
+                        </el-aside>
+                        <el-container>
+                            <el-main style="height: 120px;
+                                    background-color: #ffffff;
+                                    overflow: hidden;
+                                    padding-top: 24px;
+                                    text-indent: 30px;
+                                    text-align: left;
+                                    font-size: smaller;
+                                    word-break: break-word;
+                                    line-height: 30px;">
+                                {{blogDto.blogContent}}
+                            </el-main>
+                            <el-footer style="height: 50px; background-color: #ffffff">
+                                <span>
+                                    <i class="el-icon-user"></i>
+                                    <el-link :href="'user.html?userId='+ blogDto.blogAuthorId"
+                                             :underline="false"
+                                             style="height: 12px">
+                                        {{blogDto.authorName}}
+                                    </el-link>
+                                </span>
+                                <span>
+                                    <i class="el-icon-time"></i>
+                                    <el-link herf="" :underline="false"
+                                             style="height: 12px">{{blogDto.createTime}}</el-link>
+                                </span>
+                                <span>
+                                    <i class="el-icon-view"></i>
+                                    <el-link herf="" :underline="false" style="height: 12px">{{blogDto.countReads}}</el-link>
+                                </span>
+                                <span>
+                                    <i class="iconfont">&#xe600;</i>
+                                    <el-link herf="" :underline="false" style="height: 12px">{{blogDto.countLikes}}</el-link>
+                                </span>
+                            </el-footer>
+                        </el-container>
+                    </el-container>
+                </el-card>
+            </el-container>
+        </div>
+
+</div>
+
+<!-- 引入组件库 -->
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/element-ui/index.js"></script>
+<link rel="stylesheet" href="../../plugins/element-ui/lib/theme-chalk/index.css">
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<script src="../../js/index.js"></script>
+<script>
+    var urlParam = requestUrlParam("userId")
+    new Vue({
+        var: userId = this.urlParam,
+        el: "#blog-reads-app",
+        data() {
+            return {
+                blogList: [], // blogDto的集合
+            }
+        },
+        created() {
+            // 页面加载完成之后发送异步请求来查询博客数据
+            let _this = this;
+            axios.get("/blogs/getHistoryByUserId/" + userId).then((resp) => {
+                _this.blogList = resp.data.data;
+            })
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,31 +1,25 @@
-ul {
-    float: left;
-    margin-left: 0;
-    padding-left: 0;
-    padding-right: 0;
-    list-style: none;
-    width: 1890px;
+img {
+    vertical-align:middle;
 }
-
-
 .el-header, .el-footer {
     background-color: #B3C0D1;
     color: #333;
     text-align: center;
     line-height: 60px;
+    overflow: hidden;
 }
 
 .el-aside {
-    background-color: #D3DCE6;
+    background-color: #ffffff;
     color: #333;
     text-align: center;
-    line-height: 200px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
+    line-height: 80px;
+
 }
 
 .el-main {
-    background-color: #ffffff;
-    color: #ffffff;
+    background-color: #E9EEF3;
+    color: #333;
     text-align: center;
     line-height: 160px;
 }

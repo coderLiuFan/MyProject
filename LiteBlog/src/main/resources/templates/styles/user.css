@@ -30,3 +30,12 @@ body > .el-container {
 .el-icon-arrow-down {
     font-size: 12px;
 }
+
+.el-tabs__nav-scroll{
+    text-align: center;
+    vertical-align: middle;
+    width: 30%;
+    margin:0 auto;
+    line-height: 60px;
+}
+

@@ -6,14 +6,6 @@ const deleteBlog = (id) => {
     })
 }
 
-const getBlogPage = (params) => {
-    return $axios({
-        url: '/blogs/page',
-        method: 'get',
-        params
-    })
-}
-
 const saveBlog = (params) => {
     return $axios({
         url: '/blogs',
@@ -29,17 +21,3 @@ const updateBlog = (params) => {
         data: {...params}
     })
 }
-// 不能回显数据，不能正常封装
-// const queryBlog = (id) => {
-//     return $axios({
-//         url: '/blogs/' + id,
-//         method: 'get',
-//     })
-// }
-
-// function queryBlog(id) {
-//     return $axios({
-//         url: '/blogs/' + id,
-//         method: 'get',
-//     })
-// }
