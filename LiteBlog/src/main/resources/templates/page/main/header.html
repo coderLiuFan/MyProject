@@ -14,7 +14,7 @@
             </a>
         </el-aside>
 
-        <el-main width="960px" style="background-color: #ffffff; line-height: normal; overflow: hidden">
+        <el-main width="960px" style="background-color: #ffffff; line-height: normal; overflow: hidden" v-model="input">
             <div class="grid-content" style="width: 800px">
                 <el-button icon="el-icon-search"
                            circle
@@ -94,7 +94,7 @@
                     resume: '',
                     profession: '',
                     profile: '',
-                }
+                },
             }
         },
         computed: {},
@@ -109,6 +109,9 @@
         methods: {
             handleQuery() {
                 this.init();
+            },
+            change(e) {
+                this.$forceUpdate()
             },
             search() {
                 var keyWord = this.input.trim();
