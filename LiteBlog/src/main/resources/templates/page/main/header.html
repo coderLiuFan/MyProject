@@ -2,19 +2,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="../../styles/header.css">
 
 </head>
 <body>
-<div id="header-fragment">
-    <el-container>
-        <el-aside width="480px" style="line-height: 80px">
+<div id="header-app">
+    <el-container style="height: 75px">
+        <el-aside width="480px" style="line-height: 60px; background-color: #ffffff">
             <a href="index.html">
-                <img src="../../images/login/lite_blog_logo.jpg" height="56"/>
+                <img src="../../images/login/lite_blog_logo.jpg" height="50" alt="LOGO"/>
             </a>
         </el-aside>
 
-        <el-main width="960px" style="background-color: #8c939d; line-height: normal; overflow: hidden">
+        <el-main width="960px" style="background-color: #ffffff; line-height: normal; overflow: hidden">
             <div class="grid-content" style="width: 800px">
                 <el-button icon="el-icon-search"
                            circle
@@ -31,28 +31,36 @@
                 </el-input>
             </div>
         </el-main>
-        <el-aside width="150px" style="line-height: 80px">
+        <el-aside width="80px" style="line-height: 70px; background-color: #ffffff; overflow: hidden">
             <el-link href="index.html"
-                     icon="el-icon-s-home">首页
+                     icon="el-icon-s-home" :underline="false">首页
             </el-link>
         </el-aside>
-        <el-aside width="150px" style="line-height: 80px">
+        <el-aside width="120px" style="line-height: 70px; background-color: #ffffff; overflow: hidden">
             <el-link href="author.html"
-                     icon="el-icon-magic-stick">创作者中心
+                     icon="el-icon-magic-stick" :underline="false">创作者中心
             </el-link>
         </el-aside>
-        <el-aside width="150px" style="line-height: 80px">
-            <el-dropdown>
+        <el-aside width="250px"
+                  style="line-height: 10px; background-color: #ffffff; vertical-align: auto; overflow: hidden">
+            <el-dropdown style="cursor: pointer">
                   <span class="el-dropdown-link">
-                      <i class="el-icon-s-custom"></i>
-                            个人中心
-                      <i class="el-icon-arrow-down el-icon--right"></i>
+                      <el-image
+                              style="width: 30px; height: 30px; margin-top: 20px; border-radius: 50%; text-align: left;cursor: pointer"
+                              onerror="this.src='../../images/user/profile.jpg'"
+                              :src="'../../images/user/'+ userInfo.profile"
+                              fit="cover"
+                      >
+                      </el-image>
+                      欢迎你，{{userInfo.nickname}}
                   </span>
-                <el-dropdown-menu slot="dropdown" style="width: 120px">
+                <el-dropdown-menu slot="dropdown" style="width: 100px">
                     <el-dropdown-item>
-                        <el-link v-on:click="myPage">我的主页</el-link>
+                        <el-link v-on:click="myPage" :underline="false">我的主页</el-link>
                     </el-dropdown-item>
-                    <el-dropdown-item><el-link v-on:click="logout">退出登录</el-link></el-dropdown-item>
+                    <el-dropdown-item>
+                        <el-link v-on:click="logout" :underline="false">退出登录</el-link>
+                    </el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
         </el-aside>
@@ -71,46 +79,55 @@
 
 <script>
     new Vue({
-        el: "#header-fragment",
+        el: "#header-app",
         data() {
             return {
-                userInfo: {}
+                userInfo: {
+                    userId: 0,
+                    username: '',
+                    password: '',
+                    email: '',
+                    nickname: '',
+                    birthday: '',
+                    gender: undefined,
+                    address: '',
+                    resume: '',
+                    profession: '',
+                    profile: '',
+                }
             }
         },
         computed: {},
         created() {
-            this.init()
+            this.userInfo.nickname = JSON.parse(localStorage.getItem('userInfo')).nickname
+            this.userInfo.profile = JSON.parse(localStorage.getItem('userInfo')).profile
+            console.log(JSON.parse(localStorage.getItem('userInfo')))
         },
         mounted() {
+
         },
         methods: {
-            async init() {
-                const params = {
-                    keyWord: this.input ? this.input : undefined
-                }
-            },
             handleQuery() {
                 this.init();
             },
             change(e) {
                 this.$forceUpdate()
             },
-            search(st) {
+            search() {
                 var keyWord = this.input.trim();
-                window.location.href = "http://localhost:8080/templates/page/main/index.html?keyWord=" + keyWord
+                window.location.href = "/templates/page/main/index.html?keyWord=" + keyWord
             },
-            myPage(st) {
+            myPage() {
                 // 获取当前登录用户的id
-                var userId = window.localStorage.getItem("userInfo")
-
+                let userId = window.sessionStorage.getItem('userId')
                 console.log("userId是" + userId)
-
-                window.location.href = "http://localhost:8080/templates/page/main/user.html?userId=" + userId
+                window.location.href = "/templates/page/main/user.html?userId=" + userId
             },
             logout() {
                 logoutApi().then((res) => {
                     if (res.code === 1) {
                         localStorage.removeItem('userInfo')
+                        sessionStorage.removeItem('userId')
                         window.location.href = '/templates/page/login/login.html'
                     }
                 })
@@ -119,4 +136,5 @@
     })
 </script>
 </body>
-</html>
+
+
