@@ -366,7 +366,7 @@ public class BlogController {
      * @param queryBlog 查询博客列表的条件
      * @return blogDto的封装类集合
      */
-    public List<BlogDto> getBlogDtoListByCondition(LambdaQueryWrapper<Blog> queryBlog) {
+    private List<BlogDto> getBlogDtoListByCondition(LambdaQueryWrapper<Blog> queryBlog) {
         // 获取到所有博客实体对象
         List<Blog> blogList = blogService.list(queryBlog);
         return blogList.stream().map((item) -> {
@@ -402,7 +402,7 @@ public class BlogController {
      * @param queryWrapper 查询单个博客的条件
      * @return blogDto的封装类
      */
-    public BlogDto getBlogDtoByCondition(LambdaQueryWrapper<Blog> queryWrapper) {
+    private BlogDto getBlogDtoByCondition(LambdaQueryWrapper<Blog> queryWrapper) {
         Blog blog = blogService.getOne(queryWrapper);
         BlogDto blogDto = new BlogDto();
         BeanUtils.copyProperties(blog, blogDto);
@@ -433,7 +433,7 @@ public class BlogController {
      * @param blogIdList blogId的集合
      * @return 按照blog集合顺序排序的blogDto集合
      */
-    public List<BlogDto> getBlogDtoListByBlogIdList(List<Long> blogIdList) {
+    private List<BlogDto> getBlogDtoListByBlogIdList(List<Long> blogIdList) {
         List<BlogDto> blogDtoList = new ArrayList<>();
         for (Long blogId : blogIdList) {
             LambdaQueryWrapper<Blog> queryWrapper = new LambdaQueryWrapper<>();

@@ -5,7 +5,7 @@
 $\textcolor{Maroon}{注意：运行 LiteBlogApplication 即可启动项目，运行前请先阅读本文档并进行以下重要配置：} $
 
 1. 导入数据库：请将根目录下的 lite_blog_db.sql 文件，安装进您的 MySQL 数据库；
-2.  配置文件：配置默认端口号为 8080（建议不要修改），请配置您的数据库 username 以及 password；
+2. 配置文件（application.properties）：配置默认端口号为 8080（建议不要修改），请配置您的数据库 username 以及 password，另外将参数 liteblog.path 修改为您本地的项目存放的文件路径；
 3. 运行 LiteBlogApplication，打开浏览器，访问 http://localhost:8080/index.html；
 4. 首次访问需要登录，您可以使用默认用户名：zhangsan，密码：123456；
 5. 开始体验吧~

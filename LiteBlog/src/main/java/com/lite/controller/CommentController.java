@@ -84,7 +84,7 @@ public class CommentController {
      * @param queryComment 查询评论的条件
      * @return commentDto集合
      */
-    public List<CommentDto> getCommentDtoByCondition(LambdaQueryWrapper<Comment> queryComment) {
+    private List<CommentDto> getCommentDtoByCondition(LambdaQueryWrapper<Comment> queryComment) {
         // 依据参数条件获取到所有评论对象
         List<Comment> commentList = commentService.list(queryComment);
         return commentList.stream().map((item) -> {
